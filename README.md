@@ -1,8 +1,9 @@
 # deprem-api
 Tüm API'ye https://deprem-api.herokuapp.com adresinden ulaşabilirsiniz.
 
-Çıktı: 
+  JSON Çıktısı:
 
+> 
 >"depremler": [
 >>	{
 	>>>"Id": 1,
@@ -18,4 +19,4 @@ Tüm API'ye https://deprem-api.herokuapp.com adresinden ulaşabilirsiniz.
 		"Mw": "0"},
 	>>>"Yer": "ASAGIKINIK-GOYNUK (BOLU)",
 	"Nitelik": "İlksel"
-	>>}, ...
+	>>}, ... ]

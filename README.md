@@ -16,8 +16,7 @@ JSON Çıktısı:
     	"Buyukluk": {
     		"MD": "0",
     		"ML": "1.5",
-    		"Mw": "0"
-     },
+    		"Mw": "0"},
     	"Yer": "ASAGIKINIK-GOYNUK (BOLU)",
     	"Nitelik": "İlksel"
     }, ... ]

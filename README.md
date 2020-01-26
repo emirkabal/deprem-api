@@ -6,9 +6,9 @@ Url Parametre:
 - 	**location** : Depremin lokasyonuna göre filtereleme yapar.
 
 Örnek İstek:
-- 	http://127.0.0.1:3000/size=3.1
-- 	http://127.0.0.1:3000/location=istanbul
-- 	http://127.0.0.1:3000/size=3.1&location=istanbul
+- 	http://127.0.0.1:3000/?size=3.1
+- 	http://127.0.0.1:3000/?location=istanbul
+- 	http://127.0.0.1:3000/?size=3.1&location=istanbul
 
 JSON Çıktısı:
 

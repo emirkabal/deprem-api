@@ -3,8 +3,7 @@ import json
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
-from flask import Flask, make_response
-
+from flask import Flask, make_response, request
 
 app = Flask(__name__)
 
@@ -50,6 +49,16 @@ def get_Data():
 @app.route('/')
 def index():
     data = get_Data()
+    location = request.args.get('location')
+    size = request.args.get('size')
+
+    if location is not None and size is not None:
+        data = filterbysizeandlocation(size,location,data)
+    elif location is not None:
+        data = filterbylocation(location, data)
+    elif size is not None and size.isnumeric():
+        data = filterbysize(size,data)
+
     json_data = json.dumps({
         "dev":"Emir Kabal (https://emirkabal.com)",
         "source":"Kandilli Rasathanesi (http://www.koeri.boun.edu.tr)",
@@ -59,6 +68,36 @@ def index():
     res.headers['Content-Type'] = 'application/json'
     res.headers['Access-Control-Allow-Origin'] = '*'
     return res
+
+
+def filterbylocation(location,data):
+    earthquakelist = []
+    for i in data:
+        if location.upper() in i['Yer']:
+            earthquakelist.append(i)
+    return earthquakelist
+
+
+def filterbysize(size,data):
+    earthquakelist = []
+    for i in data:
+        try:
+            if float(size) <= float(i['Buyukluk']['ML']):
+                earthquakelist.append(i)
+        except ValueError:
+            continue
+    return earthquakelist
+
+
+def filterbysizeandlocation(size,location,data):
+    earthquakelist = []
+    for i in data:
+        try:
+            if float(size) <= float(i['Buyukluk']['ML']) and location.upper() in i['Yer']:
+                earthquakelist.append(i)
+        except ValueError:
+            continue
+    return earthquakelist
 
 # heroku app
 # if __name__ == "__main__":

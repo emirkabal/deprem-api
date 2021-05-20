@@ -1,5 +1,4 @@
-autopep8==1.4.4
-bs4==0.0.1
-Flask==1.1.1
-gunicorn==19.9.0
-requests==2.22.0
+autopep8
+beautifulsoup4
+flask
+gunicorn

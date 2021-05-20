@@ -1,6 +1,6 @@
 import re
 import json
-import requests
+from urllib.request import urlopen
 from datetime import datetime
 from bs4 import BeautifulSoup
 from flask import Flask, make_response, request
@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 def get_Data():
     array = []
-    data = requests.get('http://www.koeri.boun.edu.tr/scripts/lst2.asp')
-    soup = BeautifulSoup(data.content, 'html.parser')
+    data = urlopen('http://www.koeri.boun.edu.tr/scripts/lst2.asp').read()
+    soup = BeautifulSoup(data, 'html.parser')
     data = soup.find_all('pre')
     data = str(data).strip().split('--------------')[2]
 
@@ -40,7 +40,7 @@ def get_Data():
                 "Mw": Args[7].replace('-.-', '0') 
             },
             "Yer": Yer.strip(),
-            "Nitelik": element.split(Yer)[1].split(' ')[0]
+            "Nitelik": element.split(Yer)[1].split()[0]
         }, sort_keys=False)
 
         array.append(json.loads(json_data))
@@ -71,34 +71,15 @@ def index():
 
 
 def filterbylocation(location,data):
-    earthquakelist = []
-    for i in data:
-        if location.upper() in i['Yer']:
-            earthquakelist.append(i)
-    return earthquakelist
+    return list(filter(lambda i: location.upper() in i['Yer'], data))
 
 
 def filterbysize(size,data):
-    earthquakelist = []
-    for i in data:
-        try:
-            if float(size) <= float(i['Buyukluk']['ML']):
-                earthquakelist.append(i)
-        except ValueError:
-            continue
-    return earthquakelist
+    return list(filter(lambda i: float(size) <= float(i['Buyukluk']['ML']), data))
 
 
 def filterbysizeandlocation(size,location,data):
-    earthquakelist = []
-    for i in data:
-        try:
-            if float(size) <= float(i['Buyukluk']['ML']) and location.upper() in i['Yer']:
-                earthquakelist.append(i)
-        except ValueError:
-            continue
-    return earthquakelist
+    return list(filter(lambda i: float(size) <= float(i['Buyukluk']['ML']) and location.upper() in i['Yer'], data))
 
-# heroku app
-# if __name__ == "__main__":
-#     app.run(port=3000)
+if __name__ == "__main__":
+    app.run(port=3000)

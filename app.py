@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 def get_Data():
     array = []
-    data = urlopen('http://www.koeri.boun.edu.tr/scripts/lst2.asp').read().decode('utf-8')
+    data = urlopen('http://www.koeri.boun.edu.tr/scripts/lst2.asp').read()
     soup = BeautifulSoup(data, 'html.parser')
     data = soup.find_all('pre')
     data = str(data).strip().split('--------------')[2]
@@ -71,29 +71,15 @@ def index():
 
 
 def filterbylocation(location,data):
-    return list(filter(lambda i: location.upper() in i['Yer'], data)
+    return list(filter(lambda i: location.upper() in i['Yer'], data))
 
 
 def filterbysize(size,data):
-    earthquakelist = []
-    for i in data:
-        try:
-            if float(size) <= float(i['Buyukluk']['ML']):
-                earthquakelist.append(i)
-        except ValueError:
-            pass
-    return earthquakelist
+    return list(filter(lambda i: float(size) <= float(i['Buyukluk']['ML']), data))
 
 
 def filterbysizeandlocation(size,location,data):
-    earthquakelist = []
-    for i in data:
-        try:
-            if float(size) <= float(i['Buyukluk']['ML']) and location.upper() in i['Yer']:
-                earthquakelist.append(i)
-        except ValueError:
-            continue
-    return earthquakelist
+    return list(filter(lambda i: float(size) <= float(i['Buyukluk']['ML']) and location.upper() in i['Yer'], data))
 
 if __name__ == "__main__":
     app.run(port=3000)

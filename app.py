@@ -25,22 +25,21 @@ def get_Data():
         element = re.sub(r'\s\s', ' ', element)
         element = re.sub(r'\s\s', ' ', element)
         Args=element.split(' ')
-        Yer = Args[8]+element.split(Args[8])[len(element.split(Args[8])) - 1].split('İlksel')[0].split('REVIZE')[0]
+        location = Args[8]+element.split(Args[8])[len(element.split(Args[8])) - 1].split('İlksel')[0].split('REVIZE')[0]
         json_data = json.dumps({
-            "Id": index+1,
-            "Tarih": Args[0],
-            "Saat": Args[1],
-            "Unix_Time": datetime.strptime(Args[0]+" "+Args[1], "%Y.%m.%d %H:%M:%S").timestamp(),
-            "Enlem(N)": Args[2],
-            "Boylam(E)": Args[3],
-            "Derinlik(km)": Args[4],
-            "Buyukluk": {
-                "MD": Args[5].replace('-.-', '0'),
-                "ML": Args[6].replace('-.-', '0'),
-                "Mw": Args[7].replace('-.-', '0') 
+            "id": index+1,
+            "date": Args[0]+" "+Args[1],
+            "timestamp": int(datetime.strptime(Args[0]+" "+Args[1], "%Y.%m.%d %H:%M:%S").timestamp()),
+            "latitude": float(Args[2]),
+            "longitude": float(Args[3]),
+            "depth": float(Args[4]),
+            "size": {
+                "md": float(Args[5].replace('-.-', '0')),
+                "ml": float(Args[6].replace('-.-', '0')),
+                "mw": float(Args[7].replace('-.-', '0')) 
             },
-            "Yer": Yer.strip(),
-            "Nitelik": element.split(Yer)[1].split()[0]
+            "location": location.strip(),
+            "attribute": element.split(location)[1].split()[0]
         }, sort_keys=False)
 
         array.append(json.loads(json_data))
@@ -60,10 +59,8 @@ def index():
         data = filterbysize(size,data)
 
     json_data = json.dumps({
-        "dev":"Emir Kabal (https://emirkabal.com)",
-        "source":"Kandilli Rasathanesi (http://www.koeri.boun.edu.tr)",
-        "github_link": "https://github.com/emirkabal/deprem-api",
-        "depremler": data}, sort_keys=False)
+        "github": "https://github.com/emirkabal/deprem-api",
+        "earthquakes": data}, sort_keys=False)
     res = make_response(json_data)
     res.headers['Content-Type'] = 'application/json'
     res.headers['Access-Control-Allow-Origin'] = '*'
@@ -71,15 +68,15 @@ def index():
 
 
 def filterbylocation(location,data):
-    return list(filter(lambda i: location.upper() in i['Yer'], data))
+    return list(filter(lambda i: location.upper() in i['location'], data))
 
 
 def filterbysize(size,data):
-    return list(filter(lambda i: float(size) <= float(i['Buyukluk']['ML']), data))
+    return list(filter(lambda i: float(size) <= float(i['size']['ml']), data))
 
 
 def filterbysizeandlocation(size,location,data):
-    return list(filter(lambda i: float(size) <= float(i['Buyukluk']['ML']) and location.upper() in i['Yer'], data))
+    return list(filter(lambda i: float(size) <= float(i['size']['ml']) and location.upper() in i['location'], data))
 
 if __name__ == "__main__":
     app.run(port=3000)

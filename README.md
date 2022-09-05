@@ -10,7 +10,7 @@
 - https://deprem-api.vercel.app/?size=3.1&location=istanbul
 
 ## JSON Çıktısı:
-```json
+```jsonc
 "earthquakes": [
     {
       "id": 1,

@@ -3,12 +3,11 @@
 - **size** : Depremin büyüklüğüne göre filtreleme yapar.
 - **location** : Depremin lokasyonuna göre filtereleme yapar.
 
-<hr>
-
 ### Örnekler:
-- http://127.0.0.1:3000/?size=3.1
-- http://127.0.0.1:3000/?location=istanbul
-- http://127.0.0.1:3000/?size=3.1&location=istanbul
+- https://deprem-api.vercel.app
+- https://deprem-api.vercel.app/?size=3.1
+- https://deprem-api.vercel.app/?location=istanbul
+- https://deprem-api.vercel.app/?size=3.1&location=istanbul
 
 ## JSON Çıktısı:
 ```json

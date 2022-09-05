@@ -77,6 +77,3 @@ def filterbysize(size,data):
 
 def filterbysizeandlocation(size,location,data):
     return list(filter(lambda i: float(size) <= float(i['size']['ml']) and location.upper() in i['location'], data))
-
-if __name__ == "__main__":
-    app.run(port=3000)

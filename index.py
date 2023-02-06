@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 def get_Data():
     array = []
-    data = urlopen('http://www.koeri.boun.edu.tr/scripts/lst2.asp').read()
+    data = urlopen('http://www.koeri.boun.edu.tr/scripts/sondepremler.asp').read()
     soup = BeautifulSoup(data, 'html.parser')
     data = soup.find_all('pre')
     data = str(data).strip().split('--------------')[2]

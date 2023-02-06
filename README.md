@@ -1,10 +1,12 @@
 # deprem-api
 ### Parametreler:
+- **type** : Depremlerin hangi kaynaktan alınacağını belirtir. "afad", "kandilli" (varsayılan: kandilli)
 - **size** : Depremin büyüklüğüne göre filtreleme yapar.
 - **location** : Depremin lokasyonuna göre filtereleme yapar.
 
 ### Örnekler:
 - https://deprem-api.vercel.app
+- https://deprem-api.vercel.app/?type=afad
 - https://deprem-api.vercel.app/?size=3.1
 - https://deprem-api.vercel.app/?location=istanbul
 - https://deprem-api.vercel.app/?size=3.1&location=istanbul

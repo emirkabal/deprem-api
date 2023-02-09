@@ -3,6 +3,8 @@
 - **type** : Depremlerin hangi kaynaktan alınacağını belirtir. "afad", "kandilli" (varsayılan: kandilli)
 - **size** : Depremin büyüklüğüne göre filtreleme yapar.
 - **location** : Depremin lokasyonuna göre filtereleme yapar.
+- **hour** : Depremin kaç saat önce gerçekleştiğine göre filtereleme yapar.
+
 
 ### Örnekler:
 - https://deprem-api.vercel.app
@@ -10,6 +12,9 @@
 - https://deprem-api.vercel.app/?size=3.1
 - https://deprem-api.vercel.app/?location=istanbul
 - https://deprem-api.vercel.app/?size=3.1&location=istanbul
+- https://deprem-api.vercel.app/?hour=2
+- https://deprem-api.vercel.app/?size=3.1&hour=2
+- https://deprem-api.vercel.app/?size=3.1&hour=2&location=istanbul
 
 ## JSON Çıktısı:
 ```jsonc

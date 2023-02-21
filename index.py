@@ -1,11 +1,15 @@
 import re
 import json
+import time
+import threading
+import schedule
 from urllib.request import urlopen
 from datetime import datetime
 from bs4 import BeautifulSoup
 from flask import Flask, make_response, request
 
-app = Flask(__name__)
+afadData = []
+kandilliData = []
 
 def get_kandilli_data():
     array = []
@@ -73,15 +77,48 @@ def get_afad_data():
         array.append(json.loads(json_data))
     return array
 
-
 def get_Data(
     type='kandilli',
 ):
-
     if type == 'afad':
-        return get_afad_data()
+        return afadData
     else:
-        return get_kandilli_data()
+        return kandilliData
+
+
+def job():
+    print('Job Started')
+    global afadData
+    global kandilliData
+    afadData = get_afad_data()
+    kandilliData = get_kandilli_data()
+
+job()
+schedule.every(5).minutes.do(job)
+
+def thread_function():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+x = threading.Thread(target=thread_function)
+x.start()
+
+
+
+
+def filterbylocation(location,data):
+    return list(filter(lambda i: location.upper() in i['location'], data))
+
+
+def filterbysize(size,data):
+    return list(filter(lambda i: float(size) <= float(i['size']['ml']), data))
+
+
+def filterbysizeandlocation(size,location,data):
+    return list(filter(lambda i: float(size) <= float(i['size']['ml']) and location.upper() in i['location'], data))
+
+app = Flask(__name__)
 
 @app.route('/')
 def index():
@@ -106,16 +143,7 @@ def index():
     return res
 
 
-def filterbylocation(location,data):
-    return list(filter(lambda i: location.upper() in i['location'], data))
 
-
-def filterbysize(size,data):
-    return list(filter(lambda i: float(size) <= float(i['size']['ml']), data))
-
-
-def filterbysizeandlocation(size,location,data):
-    return list(filter(lambda i: float(size) <= float(i['size']['ml']) and location.upper() in i['location'], data))
 
 # if __name__ == '__main__':
 #     app.run(debug=True)

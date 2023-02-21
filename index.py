@@ -87,7 +87,6 @@ def get_Data(
 
 
 def job():
-    print('Job Started')
     global afadData
     global kandilliData
     afadData = get_afad_data()

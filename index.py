@@ -4,7 +4,7 @@ import time
 import threading
 import schedule
 from urllib.request import urlopen
-from datetime import datetime
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from flask import Flask, make_response, request
 
@@ -144,6 +144,24 @@ def index():
 
 
 
+
+def filterbysizeandlocation(size,location,data):
+    return list(filter(lambda i: float(size) <= float(i['size']['ml']) and location.upper() in i['location'], data))
+
+def filterbytime(hour, data):
+    now = datetime.now()
+    return [record for record in data if (now - datetime.strptime(record['date'], "%Y.%m.%d %H:%M:%S")) <= timedelta(hours=hour)]
+
+def filterbysizeandtime(size, hour, data):
+    filtered_by_time = filterbytime(hour, data)
+    filtered_by_size = filterbysize(size, filtered_by_time)
+    return filtered_by_size
+
+def filterbysizeandtimeandlocation(size, hour, location, data):
+    filtered_by_time = filterbytime(hour, data)
+    filtered_by_size = filterbysize(size, filtered_by_time)
+    filtered_by_location = filterbylocation(location, filtered_by_size)
+    return filtered_by_location
 
 # if __name__ == '__main__':
 #     app.run(debug=True)

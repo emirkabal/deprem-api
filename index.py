@@ -103,9 +103,6 @@ def thread_function():
 x = threading.Thread(target=thread_function)
 x.start()
 
-
-
-
 def filterbylocation(location,data):
     return list(filter(lambda i: location.upper() in i['location'], data))
 
@@ -118,8 +115,8 @@ def filterbysizeandlocation(size,location,data):
     return list(filter(lambda i: float(size) <= float(i['size']['ml']) and location.upper() in i['location'], data))
 
 def filterbytime(hour, data):
-    now = datetime.now()
-    return [record for record in data if (now - datetime.strptime(record['date'], "%Y.%m.%d %H:%M:%S")) <= timedelta(hours=hour)]
+    now = datetime.strptime(datetime.now().strftime("%Y.%m.%d %H:%M:%S"), '%Y.%m.%d %H:%M:%S')
+    return [record for record in data if (now - datetime.strptime(record['date'], "%Y.%m.%d %H:%M:%S")) <= timedelta(hours=int(hour))]
 
 def filterbysizeandtime(size, hour, data):
     filtered_by_time = filterbytime(hour, data)
@@ -140,6 +137,7 @@ def index():
     data = get_Data(type=source_type)
     location = request.args.get('location')
     size = request.args.get('size')
+    hour = request.args.get('hour')
 
     if location is not None and size is not None:
         data = filterbysizeandlocation(size,location,data)
@@ -147,6 +145,8 @@ def index():
         data = filterbylocation(location, data)
     elif size is not None and size.isnumeric():
         data = filterbysize(size,data)
+    elif hour is not None and size == None and location == None:
+        data = filterbytime(hour, data)
 
     json_data = json.dumps({
         "github": "https://github.com/emirkabal/deprem-api",

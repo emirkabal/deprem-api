@@ -1,3 +1,5 @@
+![banner](https://github.com/emirkabal/deprem-api/blob/master/.github/banner.jpg?raw=true)
+
 # deprem-api
 ### Parametreler:
 - **type** : Depremlerin hangi kaynaktan alınacağını belirtir. "afad", "kandilli" (varsayılan: kandilli)

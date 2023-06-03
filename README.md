@@ -38,7 +38,8 @@
     }, {...}
 ]
 ```
----
-### Referanslar
-- Kandi̇lli̇ Rasathanesi̇ ve Deprem Araştırma Ensti̇tüsü http://www.koeri.boun.edu.tr/sismo/2/en/
-- Afet ve Acil Durum Yönetimi Başkanlığı https://www.afad.gov.tr/
+## Bilgilendirme
+**deprem-api** aşağıdaki referanslar kullanılarak oluşturulmuştur ve tüm verileri aşağıda belirtilen kaynaklardan almaktadır.
+### Referanslar:
+- [AFAD (Türkiye Afet ve Acil Durum Yönetimi Başkanlığı)](https://www.afad.gov.tr/)
+- [Kandi̇lli̇ Rasathanesi̇ ve Deprem Araştırma Ensti̇tüsü](http://www.koeri.boun.edu.tr/sismo/2/en/)

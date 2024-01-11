@@ -141,57 +141,78 @@ x = threading.Thread(target=threadFunction)
 x.start()
 
 
-def filterByLocation(location, data):
+def fLocation(location, data):
     return list(filter(lambda i: location.upper() in i['location'], data))
 
 
-def filterBySize(size, data):
-    return list(filter(lambda i: float(size) <= float(i['size']['ml']), data))
+def fSize(size, data, type, isGreater):
+    
+    size = float(size)
+    type = type.lower()
 
+    if type not in ['md', 'ml', 'mw']:
+        type = 'ml'
 
-def filterBySizeAndLocation(size, location, data):
-    return list(filter(lambda i: float(size) <= float(i['size']['ml']) and location.upper() in i['location'], data))
+    if isGreater:
+        return list(filter(lambda i: size <= float(i['size'][type]), data))
+    else:
+        return list(filter(lambda i: size >= float(i['size'][type]), data))
 
+def fTime(hour, data, type):
+    if type == 'afad':
+        now = datetime.strptime(datetime.now().strftime(
+            "%Y-%m-%dT%H:%M:%S"), '%Y-%m-%dT%H:%M:%S')
+        return [record for record in data if (now - datetime.strptime(record['date'], "%Y-%m-%dT%H:%M:%S")) <= timedelta(hours=int(hour))]
+    else:
+        now = datetime.strptime(datetime.now().strftime(
+            "%Y.%m.%d %H:%M:%S"), '%Y.%m.%d %H:%M:%S')
+        return [record for record in data if (now - datetime.strptime(record['date'], "%Y.%m.%d %H:%M:%S")) <= timedelta(hours=int(hour))]
 
-def filterByTime(hour, data):
-    now = datetime.strptime(datetime.now().strftime(
-        "%Y.%m.%d %H:%M:%S"), '%Y.%m.%d %H:%M:%S')
-    return [record for record in data if (now - datetime.strptime(record['date'], "%Y.%m.%d %H:%M:%S")) <= timedelta(hours=int(hour))]
-
-
-def filterBySizeandtime(size, hour, data):
-    filtered_by_time = filterByTime(hour, data)
-    filtered_by_size = filterBySize(size, filtered_by_time)
-    return filtered_by_size
-
-
-def filterBySizeandtimeandlocation(size, hour, location, data):
-    filtered_by_time = filterByTime(hour, data)
-    filtered_by_size = filterBySize(size, filtered_by_time)
-    filtered_by_location = filterByLocation(location, filtered_by_size)
-    return filtered_by_location
-
+def isfloat(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
+    
+def strtobool (val):
+    val = val.lower()
+    if val in ('y', 'yes', 't', 'true', 'on', '1'):
+        return 1
+    elif val in ('n', 'no', 'f', 'false', 'off', '0'):
+        return 0
+    else:
+        raise ValueError("Invalid boolean value: " + val)
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def index():
-    source_type = request.args.get('type') if request.args.get(
-        'type') is not None else 'kandilli'
+    source_type = request.args.get(key='type', default='kandilli')
     data = getData(type=source_type)
-    location = request.args.get('location')
-    size = request.args.get('size')
-    hour = request.args.get('hour')
 
-    if location is not None and size is not None:
-        data = filterBySizeAndLocation(size, location, data)
-    elif location is not None:
-        data = filterByLocation(location, data)
-    elif size is not None and size.isnumeric():
-        data = filterBySize(size, data)
-    elif hour is not None and size == None and location == None:
-        data = filterByTime(hour, data)
+    location = request.args.get('location')
+    hour = request.args.get('hour')
+    size = request.args.get('size')
+    sizeType = request.args.get(key='sizeType', default='ml')
+    isGreater = request.args.get(key='isGreater', default='1')
+
+    try:
+        if location is not None:
+            data = fLocation(location, data)
+        if size is not None and isfloat(size):
+            data = fSize(size, data, type=sizeType, isGreater=strtobool(isGreater))
+        if hour is not None:
+            data = fTime(hour, data, type=source_type)
+    except Exception as e:
+        res = make_response(json.dumps({
+            "error": True,
+            "stack": str(e)
+        }), 400)
+        res.headers['Content-Type'] = 'application/json'
+        res.headers['Access-Control-Allow-Origin'] = '*'
+        return res
+
 
     json_data = json.dumps({
         "github": "https://github.com/emirkabal/deprem-api",
@@ -202,5 +223,5 @@ def index():
     return res
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
